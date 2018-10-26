@@ -1,6 +1,7 @@
 import axios, {
     AxiosResponse,
-    AxiosError} from "../../node_modules/axios";
+    AxiosError} 
+    from "../../node_modules/axios/index";
 
 interface ICar {
     model: string;
