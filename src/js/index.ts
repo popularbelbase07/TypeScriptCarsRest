@@ -1,84 +1,75 @@
-import axios, {
+import axios,
+{
     AxiosResponse,
-    AxiosError} 
-    from "../../node_modules/axios/index";
-
-interface ICar {
-    model: string;
-    vendor: string;
-    price: number;
+    AxiosError
 }
+    from "../../node_modules/axios/index"
+    interface ICar{
+        id:number
+        vendor:string
+        model:string
+        price:number
+    }
+    //Create EventHandler for button using id.
+let buttonElement:HTMLButtonElement=<HTMLButtonElement> document.getElementById("GetAllCars")
+buttonElement.addEventListener("click",SeeALL);
 
-let buttonElement: HTMLButtonElement = <HTMLButtonElement>document.getElementById("getAllButton");
-buttonElement.addEventListener("click", showAllCars);
-
-let outputElement: HTMLDivElement = <HTMLDivElement>document.getElementById("content");
-
-let buttonDeleteElement: HTMLButtonElement = <HTMLButtonElement>document.getElementById("deleteButton");
-buttonDeleteElement.addEventListener("click", deleteCar);
-
-let addButton: HTMLButtonElement = <HTMLButtonElement>document.getElementById("addButton");
-addButton.addEventListener("click", addCar);
-
-function showAllCars(): void {
-    let uri: string = "http://rest-pele-easj-dk.azurewebsites.net/api/Cars";
-    axios.get<ICar[]>(uri)
-        .then(function (response: AxiosResponse<ICar[]>): void {
-            // element.innerHTML = generateSuccessHTMLOutput(response);
-            // outputHtmlElement.innerHTML = generateHtmlTable(response.data);
-            // outputHtmlElement.innerHTML = JSON.stringify(response.data);
-            let result: string = "<ol>";
-            response.data.forEach((car: ICar) => {
-                result += "<li>" + car.model + " " + car.vendor + "</li>";
-            });
-            result += "</ol>";
-            outputElement.innerHTML = result;
-        })
-        .catch(function (error: AxiosError): void { // error in GET or in generateSuccess?
-            if (error.response) {
-                // the request was made and the server responded with a status code
-                // that falls out of the range of 2xx
-                // https://kapeli.com/cheat_sheets/Axios.docset/Contents/Resources/Documents/index
-                outputElement.innerHTML = error;
-            } else { // something went wrong in the .then block?
-                outputElement.innerHTML = error;
-            }
-        });
+//Andrei's URL for the rest webservice at Azure
+let carWebUrl: string = "https://webapicar20190326034339.azurewebsites.net/api/cars/";
+//Function for using logic.
+function SeeALL():void
+{ let result:String
+    console.log("Show all cars  !!!")
+    axios.get<ICar[]>(carWebUrl)
+    .then ((response:AxiosResponse<ICar[]>)=>{
+        response.data.forEach((car:ICar)=>
+        {
+if(car==null){
+    result ="<li>null element</li>"
 }
-
-function deleteCar(): void {
-    let output: HTMLDivElement = <HTMLDivElement>document.getElementById("contentDelete");
-    let inputElement: HTMLInputElement = <HTMLInputElement>document.getElementById("deleteInput");
-    let model: string = inputElement.value;
-    let uri: string = "http://rest-pele-easj-dk.azurewebsites.net/api/Cars/" + model;
-    axios.delete<ICar>(uri)
-        .then(function (response: AxiosResponse<ICar>): void {
-            // element.innerHTML = generateSuccessHTMLOutput(response);
-            // outputHtmlElement.innerHTML = generateHtmlTable(response.data);
-            console.log(JSON.stringify(response));
-            output.innerHTML = response.status + " " + response.statusText;
-        })
-        .catch(function (error: AxiosError): void { // error in GET or in generateSuccess?
-            if (error.response) {
-                // the request was made and the server responded with a status code
-                // that falls out of the range of 2xx
-                // https://kapeli.com/cheat_sheets/Axios.docset/Contents/Resources/Documents/index
-                output.innerHTML = error;
-            } else { // something went wrong in the .then block?
-                output.innerHTML = error;
-            }
-        });
+else{
+    result="<li>"+car.id +" "+ car.vendor+" " + car.model+" " +car.price + "</li> <br>";
 }
+    document.getElementById("carList").innerHTML+=result ;  
+ })
+})
 
-function addCar(): void {
-    let addModelElement: HTMLInputElement = <HTMLInputElement>document.getElementById("addModel");
-    let addVendorElement: HTMLInputElement = <HTMLInputElement>document.getElementById("addVendor");
-    let addPriceElement: HTMLInputElement = <HTMLInputElement>document.getElementById("addPrice");
-    let myModel: string = addModelElement.value;
-    let myVendor: string = addVendorElement.value;
-    let myPrice: number = Number(addPriceElement.value);
-    let uri: string = "http://rest-pele-easj-dk.azurewebsites.net/api/Cars";
-    axios.post<ICar>(uri, { model: myModel, vendor: myVendor, price: myPrice })
-        .then((response: AxiosResponse) => { console.log("response " + response.status + " " + response.statusText); })
-        .catch((error: AxiosError) => { console.log(error); });
+}
+//Adding new car
+let AddingElement:HTMLButtonElement=<HTMLButtonElement> document.getElementById("addButton")
+AddingElement.addEventListener("click",AddCar)
+function AddCar():void
+{
+console.log("Adding new car in database !!!")
+let cModel=(<HTMLInputElement>document.getElementById('addModel')).value
+let cVendor=(<HTMLInputElement>document.getElementById('addVendor')).value
+let cPrice=(<HTMLInputElement>document.getElementById('addPrice')).value
+axios.post<ICar>(carWebUrl,{model:cModel,vendor:cVendor,price:cPrice})
+.then(function(response:AxiosResponse){
+    console.log(response.status +" " + response.statusText);
+})
+.catch(function(error:AxiosError)
+{
+    console.log(error);
+    
+});
+
+}
+//Delete the car from database
+let deleteElement:HTMLButtonElement=<HTMLButtonElement> document.getElementById("DeleteData")
+deleteElement.addEventListener("click",DeleteCar)
+function DeleteCar():void
+{
+    console.log("Delete the selected car")
+    let deleteid=(<HTMLInputElement>document.getElementById("inputId")).value;
+    console.log("Id is:"+deleteElement)
+    axios.delete<ICar>(carWebUrl +deleteid +"/")
+    //for success we use .then
+    .then((response:AxiosResponse)=> { console.log("Deleted Yes")
+    })
+    .catch((response:AxiosResponse)=>{
+        console.log("No Delete");
+    });
+
+
 }
