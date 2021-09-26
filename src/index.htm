@@ -3,16 +3,27 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>My car Demo</title>
-  <link rel="stylesheet" type="text/css" href="bundle.css">
+  <link rel="stylesheet" type="styles/scss" href="bundle.css">
+  <link rel="stylesheet" type="styles/css" href="styles.scss">
+  
 </head>
 <body>
   <div>
     <h1>Using axios get all data from carRestWebService</h1>
+    <div>
     <h2>Display all cars</h2>
     <button id="GetAllCars"><h4>GetAllCars</h4></button >
     <ul id="carList">
-
+      <table id="table1">
+        <th>
+          <tr>S.N</tr>  
+          <tr>Company Name</tr>
+          <tr>Model Name</tr>
+          <tr>Price</tr>
+        </th>
+      </table>
     </ul>
+  </div>
   </div>
 <!--Adding new car in database-->
 <div>

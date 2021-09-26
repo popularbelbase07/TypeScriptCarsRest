@@ -28,6 +28,7 @@ if(car==null){
     result ="<li>null element</li>"
 }
 else{
+    
     result="<li>"+car.id +" "+ car.vendor+" " + car.model+" " +car.price + "</li> <br>";
 }
     document.getElementById("carList").innerHTML+=result ;  
